@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script type="text/javascript">
+        /*
+        js中有三种逻辑运算符
+        非!    取反操作
+        与&&    
+        或||
+
+        利用!!符号转换成Boolean值，
+        取两次非则实现类型转换
+        原理和Boolean（）相同
+
+        &&与运算
+
+        ||或运算
+
+        */
+       var a = true;
+       a = !a;
+       console.log(a);//false
+
+       var a = true;
+       a = !!a;//转换类型
+       console.log(a);//true
+
+        
+       var b = 10;
+       console.log("b = " + b);
+       console.log(typeof b);
+
+
+
+        //第一个值为false，不会检查第二个值
+        false && alert("看我出不出来！");
+
+        //你给的答案是true还是false
+        true && alert("我回来了，亲爱的。");
+
+        // //其中一个成就成
+        // // result = false || false;
+        // result = true || false;
+        // alert(result);
+
+        // //两个成才成
+        // result = false && true;
+        // alert(result);
+
+        true||alert("欢迎来到dld");//检查第二个值的条件是第一个为false
+        false||alert("dld不欢迎你");
+
+        
+    </script>
+</body>
+</html>

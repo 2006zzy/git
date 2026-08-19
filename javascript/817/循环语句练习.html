@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        /*
+        年利率为百分之5，试求从1000增长到5000，需要花多少年
+        */
+        var a = 1000;
+        var b = 0;
+        while(a < 5000){
+            a *= 1.05;
+            b++;
+        }
+        document.write(b);
+    </script>
+</body>
+</html>

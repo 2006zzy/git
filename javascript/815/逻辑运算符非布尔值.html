@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script text/javascript>
+        /*
+        对于非布尔值进行运算，
+        会转为布尔值再进行运算，
+
+        && 第一个值为true肯定得向后看啊
+        第一个值为false就直接返回false了
+
+        || 第一个值是对的就返回第一个值
+        第二个值是错的，就返回第二个值
+        */
+
+        //true&&true则返回后者
+       var result = 2 && 1;
+       console.log(result);
+
+       //true&&false
+       //false&&true返回false
+       //false&&false返回靠前的false
+       var result = 0 && 8;
+        result = NaN && false;//NaN为false,但返回NaN
+        result = null && false;
+       console.log("result ="+result);
+
+       var e = 1 || 2;
+       console.log("e =" + e);
+
+       var d = NaN || e;
+       console.log("d =" +d);
+
+       var c = null || e;
+       c=-1||"你好";
+       c=0||"你好";//
+        console.log("c ="+c);
+
+        var p = null || NaN;
+        console.log("p="+p);
+    </script>
+</body>
+</html>

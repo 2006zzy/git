@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>立体爱心 · 自旋效果</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            background-color: #0a0a1a;
+            font-family: 'Segoe UI', 'PingFang SC', Roboto, sans-serif;
+            color: #ffffff;
+            user-select: none;
+        }
+
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #0a0a1a;
+            z-index: 1000;
+            transition: opacity 0.6s ease;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 77, 138, 0.1);
+            border-top: 3px solid #ff4d8a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #loading p {
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        #canvas-container canvas {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        #header {
+            position: fixed;
+            top: 30px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        #header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #ff4d8a;
+            text-shadow: 0 0 30px rgba(255, 77, 138, 0.4);
+            letter-spacing: 2px;
+        }
+
+        #header .subtitle {
+            margin-top: 8px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 4px;
+            font-weight: 300;
+        }
+
+        #footer {
+            position: fixed;
+            bottom: 30px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        #footer p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .controls-hint {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 12px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .controls-hint span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        @media (max-width: 768px) {
+            #header h1 { font-size: 22px; }
+            #header .subtitle { font-size: 12px; }
+            #footer p { font-size: 12px; }
+            .controls-hint { gap: 15px; font-size: 11px; flex-wrap: wrap; }
+        }
+
+        @media (max-width: 480px) {
+            #header { top: 20px; }
+            #header h1 { font-size: 18px; }
+            #header .subtitle { font-size: 10px; }
+            #footer { bottom: 20px; }
+            #footer p { font-size: 10px; }
+            .controls-hint { gap: 10px; font-size: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">
+        <div class="loader"></div>
+        <p>加载中...</p>
+    </div>
+
+    <header id="header">
+        <h1>❤️ 立体爱心</h1>
+        <p class="subtitle">绕Y轴自旋 · 像地球一样</p>
+    </header>
+
+    <div id="canvas-container"></div>
+
+    <footer id="footer">
+        <p>Three.js · 拖拽旋转 · 滚轮缩放</p>
+        <div class="controls-hint">
+            <span>🖱️ 拖拽旋转</span>
+            <span>🔍 滚轮缩放</span>
+            <span>🔄 爱心自旋</span>
+        </div>
+    </footer>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        document.getElementById('loading').style.display = 'none';
+
+        // ----- 场景 -----
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0a0a1a);
+
+        // ----- 相机 -----
+        const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(3.5, 2.5, 5.5);
+        camera.lookAt(0, 0, 0);
+
+        // ----- 渲染器 -----
+        const container = document.getElementById('canvas-container');
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        // ----- 控制器 -----
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.autoRotate = false;
+        controls.enableZoom = true;
+        controls.enablePan = false;
+        controls.target.set(0, 0, 0);
+        controls.update();
+
+        // ----- 灯光 -----
+        scene.add(new THREE.AmbientLight(0x404060, 0.5));
+        
+        const mainLight = new THREE.PointLight(0xff4d6d, 2.0);
+        mainLight.position.set(3, 4, 5);
+        scene.add(mainLight);
+        
+        const fillLight = new THREE.PointLight(0x4ecdc4, 1.0);
+        fillLight.position.set(-4, 2, -3);
+        scene.add(fillLight);
+        
+        const backLight = new THREE.PointLight(0xaa88ff, 0.8);
+        backLight.position.set(0, -3, -5);
+        scene.add(backLight);
+        
+        const topLight = new THREE.DirectionalLight(0xffaa88, 0.4);
+        topLight.position.set(0, 5, 0);
+        scene.add(topLight);
+
+        // ----- 创建爱心（使用权威公式）-----
+        function createHeart() {
+            const segments = 64;
+            const vertices = [];
+            const indices = [];
+            const colors = [];
+            const scale = 2.4;
+
+            for (let i = 0; i <= segments; i++) {
+                const u = (i / segments) * Math.PI * 2;
+                for (let j = 0; j <= segments; j++) {
+                    const v = (j / segments) * Math.PI;
+                    
+                    const sinU = Math.sin(u);
+                    const cosU = Math.cos(u);
+                    const sinV = Math.sin(v);
+                    const cosV = Math.cos(v);
+                    
+                    const heartX2d = 15 * sinU - 4 * Math.sin(3 * u);
+                    const heartZ2d = 15 * cosU - 5 * Math.cos(2 * u) - 2 * Math.cos(3 * u) - Math.cos(4 * u);
+                    
+                    const px = sinV * heartX2d / 17;
+                    const py = 8 * cosV / 17;
+                    const pz = sinV * heartZ2d / 17;
+                    
+                    vertices.push(px * scale, py * scale * 1.1, pz * scale);
+                    
+                    const normY = (py + 0.7) / 1.4;
+                    const r = 0.85 + 0.15 * (1 - normY);
+                    const g = 0.1 + 0.3 * (1 - normY) * 0.5;
+                    const b = 0.2 + 0.6 * normY;
+                    colors.push(r, g * 0.7, b * 0.85);
+                }
+            }
+
+            for (let i = 0; i < segments; i++) {
+                for (let j = 0; j < segments; j++) {
+                    const a = i * (segments + 1) + j;
+                    const b = i * (segments + 1) + j + 1;
+                    const c = (i + 1) * (segments + 1) + j;
+                    const d = (i + 1) * (segments + 1) + j + 1;
+                    indices.push(a, b, c);
+                    indices.push(b, d, c);
+                }
+            }
+
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            geometry.setIndex(indices);
+            geometry.computeVertexNormals();
+
+            const material = new THREE.MeshPhongMaterial({
+                vertexColors: true,
+                emissive: 0x3a1020,
+                emissiveIntensity: 0.25,
+                shininess: 40,
+                transparent: true,
+                opacity: 0.92,
+                side: THREE.DoubleSide,
+                specular: 0x442233,
+                flatShading: false
+            });
+
+            const mesh = new THREE.Mesh(geometry, material);
+            
+            // ✅ 关键：旋转爱心使其竖立（爱心尖朝上，底朝下）
+            mesh.rotation.x = -Math.PI / 2;
+            
+            return mesh;
+        }
+
+        const heart = createHeart();
+        scene.add(heart);
+
+        // ----- 粒子光环（5000个粒子）-----
+        function createParticles() {
+            const count = 5000;
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(count * 3);
+            const colors = new Float32Array(count * 3);
+
+            const c1 = new THREE.Color(0xff4d8a);
+            const c2 = new THREE.Color(0x4ecdc4);
+            const c3 = new THREE.Color(0xaa88ff);
+
+            for (let i = 0; i < count; i++) {
+                const u = Math.random() * Math.PI * 2;
+                const v = Math.random() * Math.PI;
+                const rOffset = 0.4 + Math.random() * 2.0;
+                
+                const sinU = Math.sin(u);
+                const cosU = Math.cos(u);
+                const sinV = Math.sin(v);
+                const cosV = Math.cos(v);
+                
+                const heartX2d = 15 * sinU - 4 * Math.sin(3 * u);
+                const heartZ2d = 15 * cosU - 5 * Math.cos(2 * u) - 2 * Math.cos(3 * u) - Math.cos(4 * u);
+                
+                const scale = 2.4;
+                const baseX = sinV * heartX2d / 17 * scale * rOffset;
+                const baseY = 8 * cosV / 17 * scale * 1.1 * rOffset;
+                const baseZ = sinV * heartZ2d / 17 * scale * rOffset;
+                
+                const noise = 0.3 + Math.random() * 0.3;
+                positions[i*3] = baseX + (Math.random() - 0.5) * noise;
+                positions[i*3+1] = baseY + (Math.random() - 0.5) * noise;
+                positions[i*3+2] = baseZ + (Math.random() - 0.5) * noise;
+
+                let mixCol;
+                const rand = Math.random();
+                if (rand < 0.4) mixCol = c1.clone().lerp(c2, Math.random());
+                else if (rand < 0.7) mixCol = c2.clone().lerp(c3, Math.random());
+                else mixCol = c3.clone().lerp(c1, Math.random());
+                mixCol.multiplyScalar(0.6 + Math.random() * 0.5);
+                
+                colors[i*3] = mixCol.r;
+                colors[i*3+1] = mixCol.g;
+                colors[i*3+2] = mixCol.b;
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const material = new THREE.PointsMaterial({
+                size: 0.08,
+                vertexColors: true,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                opacity: 0.9,
+                sizeAttenuation: true
+            });
+
+            return new THREE.Points(geometry, material);
+        }
+
+        const particles = createParticles();
+        scene.add(particles);
+
+        // ----- 装饰环 -----
+        function createRings() {
+            const rings = [];
+            const configs = [
+                { color: 0xff4d8a, radius: 2.8, opacity: 0.08, rotX: Math.PI / 2.3, rotZ: 0.3 },
+                { color: 0x4ecdc4, radius: 3.2, opacity: 0.06, rotX: 0.7, rotY: 0.5 },
+                { color: 0xaa88ff, radius: 2.4, opacity: 0.07, rotX: 1.1, rotY: 0.2 }
+            ];
+
+            configs.forEach((cfg) => {
+                const mat = new THREE.MeshBasicMaterial({
+                    color: cfg.color,
+                    transparent: true,
+                    opacity: cfg.opacity,
+                    side: THREE.DoubleSide
+                });
+                const ring = new THREE.Mesh(
+                    new THREE.TorusGeometry(cfg.radius, 0.01, 16, 48),
+                    mat
+                );
+                if (cfg.rotX) ring.rotation.x = cfg.rotX;
+                if (cfg.rotY) ring.rotation.y = cfg.rotY;
+                if (cfg.rotZ) ring.rotation.z = cfg.rotZ;
+                rings.push(ring);
+            });
+
+            return rings;
+        }
+
+        const rings = createRings();
+        rings.forEach(ring => scene.add(ring));
+
+        // ✅ 将所有要旋转的元素放入一个组
+        const spinGroup = new THREE.Group();
+        scene.remove(heart);
+        scene.remove(particles);
+        rings.forEach(ring => scene.remove(ring));
+
+        spinGroup.add(heart);
+        spinGroup.add(particles);
+        rings.forEach(ring => spinGroup.add(ring));
+
+        scene.add(spinGroup);
+
+        // 星点背景
+        function createStars() {
+            const count = 400;
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(count * 3);
+            for (let i = 0; i < count; i++) {
+                const radius = 4.5 + Math.random() * 5;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos((Math.random() * 2) - 1);
+                positions[i*3] = radius * Math.sin(phi) * Math.cos(theta);
+                positions[i*3+1] = radius * Math.sin(phi) * Math.sin(theta) * 0.6 + 0.2;
+                positions[i*3+2] = radius * Math.cos(phi);
+            }
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const material = new THREE.PointsMaterial({
+                color: 0x88aaff,
+                size: 0.05,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                opacity: 0.4,
+                sizeAttenuation: true
+            });
+            return new THREE.Points(geometry, material);
+        }
+
+        const stars = createStars();
+        scene.add(stars);
+
+        // 网格
+        const gridHelper = new THREE.GridHelper(8, 16, 0x446688, 0x223344);
+        gridHelper.position.y = -2.0;
+        gridHelper.material.transparent = true;
+        gridHelper.material.opacity = 0.12;
+        scene.add(gridHelper);
+
+        // ----- 动画循环 -----
+        const rotationSpeed = 0.01;
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // ✅ 爱心绕Y轴自旋（像地球一样）
+            spinGroup.rotation.y += rotationSpeed;
+
+            // 星点背景缓慢旋转
+            stars.rotation.y += 0.0001;
+
+            // 爱心脉动
+            const pulse = 1 + Math.sin(Date.now() * 0.001) * 0.004;
+            heart.scale.set(pulse, pulse, pulse);
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        });
+
+        console.log('❤️ 立体爱心自旋中（绕Y轴）');
+    </script>
+</body>
+</html>

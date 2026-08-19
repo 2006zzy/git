@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="alert('讨厌，你点我干嘛~~');">点我一下</button>
+    <!-- js代码编写进onclick属性中，点击按钮时才执行命令-->
+
+
+     <a href="javascript:alert('进来了');">点了就进来了</a>
+     <!-- js代码写在超链接的href属性中，点击超链接执行代码-->
+
+
+      <a href="javascrpt:;">点我没用</a>
+
+
+    <script type="text/javascript" src="813js/script.js">
+            alert("我是内部标签");
+    </script>
+    <!-- 这种情况优先级外部文件-->
+     <!--外部文件可用script标签引用-->
+
+
+    <script type="text/javascript">
+
+
+        alert("你这个王八蛋！！");
+    <!--面向浏览器 -->
+
+
+        document.write("看你妈呢！"); 
+    <!-- 面向网页-->
+
+
+        console.log("再看你就得鼠");
+    <!-- 面向控制台-->
+
+    
+    </script>
+</body>
+</html>  

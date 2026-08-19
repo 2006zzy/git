@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script type="text/javascript">
+        //自增
+        //变量在自身基础上jia1
+        //a++ ++a都为自增，但值不同
+        //先打印后计算，先计算后打印
+        var a = 1;
+        a++;
+        console.log("a = " +a);//jieguo为2
+
+        var a = 1;
+        a++;
+        a++;
+        console.log("a = " +a);//3
+
+        var a = 1;
+        ++a;//+1
+        console.log("a = " +a);//2
+        console.log(++a);//3
+        console.log(a++);//3
+
+        var a = 1;
+        console.log(a++);//1 原值和新值的区别
+        console.log(++a);//3 后加和前加的区别
+
+        var a = 1;
+        // console.log(a++);
+        console.log(++a);//2
+        console.log(a++);//2
+
+        var d = 20;
+        var result = d++ + ++d + d ;//22 + 22 + 20  = 64
+        console.log(result)
+
+        var d = 20;
+        d = d++;
+        console.log(d)//自判断21,实际为20，返回值为原值，加上运算符，要把+1算上。
+
+        var e = 30;
+        e = e--;
+        console.log(e);
+        console.log(--e);
+        console.log(e--);
+
+        var e = 30;
+        e = e--;
+        console.log(e);
+        console.log(e--);
+        console.log(--e);
+
+        var e = 30;
+        e = --e;
+        console.log(e);
+        console.log(--e);
+        console.log(e--);
+
+        var e = 30;
+        e = --e;
+        console.log(e);
+        console.log(e--);
+        console.log(--e);
+
+    </script>
+</body>
+</html>

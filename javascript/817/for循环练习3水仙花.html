@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        /*
+        水仙花数，每个位置上的数字的三次幂之和为他本身。
+        打印所有三位数的水仙花数
+        我真棒，思路是完善的，小瑕疵。取余，取整parseint()
+        */
+       for(var i = 100;i<1000;i++){
+            var c = parseInt(i/100);
+            var b = parseInt((i%100)/10);
+            var a = parseInt(i%10);
+            if(c*c*c+b*b*b+a*a*a == i){
+                document.write(i + '<br>');
+            }
+       }
+       
+    </script>
+</body>
+</html>

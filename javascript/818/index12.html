@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <title>双心星辰 · 冰蓝与粉晶绕流</title> -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            overflow: hidden;
+            background-color: #0b0710;
+            font-family: 'Segoe UI', 'PingFang SC', Roboto, sans-serif;
+            color: #ffffff;
+            user-select: none;
+        }
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        .info {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+            color: rgba(255,255,255,0.25);
+            font-size: 14px;
+            letter-spacing: 2px;
+            pointer-events: none;
+            text-shadow: 0 0 12px rgba(0,0,0,0.7);
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    <div class="info"></div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+        // --- 初始化场景 ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0b0710);
+
+        const camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.1, 60);
+        camera.position.set(5, 3.5, 8);
+        camera.lookAt(0, 0, 0);
+
+        const container = document.getElementById('canvas-container');
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = false;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.0;
+        container.appendChild(renderer.domElement);
+
+        const pmrem = new THREE.PMREMGenerator(renderer);
+        scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.06).texture;
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.06;
+        controls.autoRotate = false;
+        controls.target.set(0, 0, 0);
+        controls.update();
+
+        // --- 灯光 (柔和全局, 双色氛围) ---
+        scene.add(new THREE.AmbientLight(0x8899bb, 1.2 * 0.6));
+
+        const mainLight = new THREE.DirectionalLight(0xffeef8, 2.0 * 0.6);
+        mainLight.position.set(2, 5, 6);
+        scene.add(mainLight);
+
+        const fillLight = new THREE.DirectionalLight(0x88ccff, 1.6 * 0.6);
+        fillLight.position.set(-4, 1, -3);
+        scene.add(fillLight);
+
+        const backLight = new THREE.DirectionalLight(0xff99bb, 1.4 * 0.6);
+        backLight.position.set(-1, -2, -6);
+        scene.add(backLight);
+
+        scene.add(new THREE.HemisphereLight(0x88bbff, 0x331122, 0.9 * 0.6));
+
+        // --- 工具函数：创建爱心 (冰蓝 / 粉晶) ---
+        function createHeart(style = 'cyan') {
+            const vertices = [];
+            const indices = [];
+            const colors = [];
+            const scale = 2.2;
+            const div = 26;
+            const fatScaleX = 0.9;
+            const fatScaleZ = 1.0;
+            const fatScaleY = 1.3;
+
+            let colorPalette;
+            if (style === 'cyan') {
+                colorPalette = [
+                    new THREE.Color(0x1a5fa8),
+                    new THREE.Color(0x3fa9ff),
+                    new THREE.Color(0x66e0ff),
+                    new THREE.Color(0xeefaff)
+                ];
+            } else { // pink
+                colorPalette = [
+                    new THREE.Color(0x7a1a3a),
+                    new THREE.Color(0xcc3a6a),
+                    new THREE.Color(0xff6699),
+                    new THREE.Color(0xffd0dd)
+                ];
+            }
+
+            for (let i = 0; i <= div; i++) {
+                const u = (i / div) * Math.PI * 2;
+                for (let j = 0; j <= div; j++) {
+                    const v = (j / div) * Math.PI;
+                    const sinU = Math.sin(u), cosU = Math.cos(u);
+                    const sinV = Math.sin(v), cosV = Math.cos(v);
+
+                    const hx = 15 * sinU - 4 * Math.sin(3 * u);
+                    const hz = 15 * cosU - 5 * Math.cos(2 * u) - 2 * Math.cos(3 * u) - Math.cos(4 * u);
+
+                    let px = sinV * hx / 17;
+                    let py = 8 * cosV / 17;
+                    let pz = sinV * hz / 17;
+
+                    const jitter = 0.085;
+                    const randomFactor = Math.sin(i * 0.7 + j * 1.1) * jitter;
+                    px += randomFactor * px;
+                    py += randomFactor * py * 0.4;
+                    pz += randomFactor * pz;
+
+                    const edgeFactor = Math.pow(Math.abs(sinV), 6);
+                    px += edgeFactor * (Math.random() - 0.5) * 0.35;
+                    pz += edgeFactor * (Math.random() - 0.5) * 0.35;
+
+                    px *= fatScaleX;
+                    pz *= fatScaleZ;
+                    py *= fatScaleY;
+
+                    vertices.push(px * scale, py * scale * 1.1, pz * scale);
+
+                    const t = (py + 0.7) / 1.4;
+                    const color = new THREE.Color();
+                    if (t < 0.33) {
+                        color.lerpColors(colorPalette[0], colorPalette[1], t * 3);
+                    } else if (t < 0.66) {
+                        color.lerpColors(colorPalette[1], colorPalette[2], (t - 0.33) * 3);
+                    } else {
+                        color.lerpColors(colorPalette[2], colorPalette[3], (t - 0.66) * 3);
+                    }
+                    colors.push(color.r, color.g, color.b);
+                }
+            }
+
+            for (let i = 0; i < div; i++) {
+                for (let j = 0; j < div; j++) {
+                    const a = i * (div + 1) + j;
+                    const b = i * (div + 1) + j + 1;
+                    const c = (i + 1) * (div + 1) + j;
+                    const d = (i + 1) * (div + 1) + j + 1;
+                    indices.push(a, d, b);
+                    indices.push(a, c, d);
+                }
+            }
+
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            geometry.setIndex(indices);
+            geometry.computeVertexNormals(true);
+
+            const emissiveColor = style === 'cyan' ? 0x1a6ad8 : 0xaa3366;
+            const material = new THREE.MeshPhysicalMaterial({
+                vertexColors: true,
+                emissive: emissiveColor,
+                emissiveIntensity: 0.45 * 0.5,
+                roughness: 0.15,
+                metalness: 0.0,
+                transparent: true,
+                opacity: 0.88,
+                transmission: 0.35,
+                thickness: 0.5,
+                ior: 1.5,
+                specularIntensity: 1.3,
+                specularColor: 0xffffff,
+                clearcoat: 1.0,
+                clearcoatRoughness: 0.08,
+                side: THREE.DoubleSide,
+                flatShading: true,
+                depthWrite: false,
+            });
+
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.rotation.x = -Math.PI / 2;
+            return mesh;
+        }
+
+        // --- 创建两个爱心 (冰蓝 + 粉晶) ---
+        const heartCyan = createHeart('cyan');
+        const heartPink = createHeart('pink');
+
+        // --- 创建星群粒子 (球壳分布, 颜色匹配) ---
+        function createParticleSystem(count, colorStyle, radiusMin = 3.0, radiusMax = 8.0) {
+            const positions = new Float32Array(count * 3);
+            const colors = new Float32Array(count * 3);
+            const data = [];
+
+            for (let i = 0; i < count; i++) {
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos((Math.random() * 2) - 1);
+                const radius = radiusMin + Math.random() * (radiusMax - radiusMin);
+
+                let px = radius * Math.sin(phi) * Math.cos(theta);
+                let py = radius * Math.cos(phi) * 0.85;
+                let pz = radius * Math.sin(phi) * Math.sin(theta);
+
+                const cloudFactor = 0.85 + Math.random() * 0.3;
+                px *= cloudFactor;
+                py *= cloudFactor;
+                pz *= cloudFactor;
+
+                positions[i * 3] = px;
+                positions[i * 3 + 1] = py;
+                positions[i * 3 + 2] = pz;
+
+                data.push({
+                    originX: px,
+                    originY: py,
+                    originZ: pz,
+                    phase: Math.random() * Math.PI * 2,
+                    amplitude: 0.12 + Math.random() * 0.2
+                });
+
+                const dist = Math.sqrt(px * px + py * py + pz * pz);
+                const normDist = Math.min(dist / 12.0, 1.0);
+
+                let r, g, b;
+                if (colorStyle === 'cyan') {
+                    r = 0.0 + 0.8 * normDist;
+                    g = 0.6 + 0.4 * normDist;
+                    b = 0.8 + 0.2 * normDist;
+                } else { // pink
+                    r = 0.6 + 0.4 * normDist;
+                    g = 0.1 + 0.7 * normDist;
+                    b = 0.25 + 0.65 * normDist;
+                }
+                const variation = 0.85 + Math.random() * 0.3;
+                colors[i * 3] = r * variation;
+                colors[i * 3 + 1] = g * variation;
+                colors[i * 3 + 2] = b * variation;
+            }
+
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const material = new THREE.PointsMaterial({
+                size: 0.095,
+                vertexColors: true,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                opacity: 1.0,
+                sizeAttenuation: true
+            });
+
+            const points = new THREE.Points(geometry, material);
+            // 存储数据用于动画
+            points.userData = { data, geometry, material };
+            return points;
+        }
+
+        // --- 创建两个星群 (粒子数 4800) ---
+        const particleCyan = createParticleSystem(4800, 'cyan', 3.0, 8.2);
+        const particlePink = createParticleSystem(4800, 'pink', 3.0, 8.2);
+
+        // --- 背景星星 (微光) ---
+        function createBackgroundStars() {
+            const count = 1200;
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(count * 3);
+            const colors = new Float32Array(count * 3);
+
+            for (let i = 0; i < count; i++) {
+                const radius = 12 + Math.random() * 18;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos((Math.random() * 2) - 1);
+                positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+                positions[i * 3 + 1] = radius * Math.cos(phi) * 0.6;
+                positions[i * 3 + 2] = radius * Math.sin(phi) * Math.sin(theta);
+
+                const bright = (0.3 + Math.random() * 0.5) * 0.6;
+                const tint = Math.random();
+                if (tint < 0.4) {
+                    colors[i * 3] = bright * 0.8;
+                    colors[i * 3 + 1] = bright * 0.9;
+                    colors[i * 3 + 2] = bright;
+                } else if (tint < 0.7) {
+                    colors[i * 3] = bright;
+                    colors[i * 3 + 1] = bright * 0.7;
+                    colors[i * 3 + 2] = bright * 0.8;
+                } else {
+                    colors[i * 3] = bright * 0.9;
+                    colors[i * 3 + 1] = bright * 0.6;
+                    colors[i * 3 + 2] = bright * 0.7;
+                }
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const material = new THREE.PointsMaterial({
+                vertexColors: true,
+                size: 0.08,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                opacity: 0.8,
+                sizeAttenuation: true
+            });
+            return new THREE.Points(geometry, material);
+        }
+        const bgStars = createBackgroundStars();
+        scene.add(bgStars);
+
+        // --- 构建双星系统 ---
+        // 每个星群为一个组，包含爱心 + 粒子
+        const groupCyan = new THREE.Group();
+        groupCyan.add(heartCyan);
+        groupCyan.add(particleCyan);
+        scene.add(groupCyan);
+
+        const groupPink = new THREE.Group();
+        groupPink.add(heartPink);
+        groupPink.add(particlePink);
+        scene.add(groupPink);
+
+        // --- 位置设定: 使两个星群在X轴上对称，距离为临界接近 (不相交) ---
+        // 爱心半径约 2.4 * 1.3 ≈ 3.1，粒子外壳最大约 8.2，但粒子密度外沿较疏
+        // 取中心距离 7.2 使外壳略有交错但爱心不相交，视觉上临界
+        const separation = 7.2;
+        groupCyan.position.x = -separation / 2;
+        groupPink.position.x = separation / 2;
+
+        // 稍微上下错落增加层次
+        groupCyan.position.y = 0.2;
+        groupPink.position.y = -0.2;
+
+        // --- 自转轴平行于Y轴 (各自旋转) ---
+        // 注意: 爱心默认旋转了 -PI/2 使其平躺，此处我们让组绕Y轴旋转，爱心本身已平躺
+        // 额外让爱心自身有一点小倾斜
+
+        // --- 轨道旋转: 两个星群围绕一个中心点 (0,0,0) 旋转，且保持相对位置不变? 
+        // 要求: "围绕与各自自转轴平行的直线相互旋转" -> 即两个星群分别绕Y轴旋转，但它们的相对位置不变?
+        // 更准确的解读: 两个星群各自绕自己的Y轴自转，同时它们整体围绕一个共同的轴 (Y) 公转?
+        // 但 "围绕与各自自转轴平行的直线相互旋转" 可以理解为它们各自绕Y轴旋转，且位置在X轴上对称，
+        // 同时整体可以绕Y轴公转，但那样会改变相对位置。
+        // 更合理的视觉: 两个星群各自绕自身的Y轴自转，并且它们整体可以围绕场景中心Y轴缓慢公转，保持距离不变。
+        // 这样既 "围绕与各自自转轴平行的直线" (都是Y轴) 又 "相互旋转" (相对位置旋转)
+        // 所以我们让 groupCyan 和 groupPink 作为子对象放入一个母组，母组绕Y轴旋转。
+
+        const masterGroup = new THREE.Group();
+        // 把两个group从场景移除，加入masterGroup
+        scene.remove(groupCyan);
+        scene.remove(groupPink);
+        masterGroup.add(groupCyan);
+        masterGroup.add(groupPink);
+        scene.add(masterGroup);
+
+        // 保持相对位置不变，但masterGroup旋转时它们一起转，视觉上相互绕Y轴旋转
+        // 同时每个group自身也绕Y轴自转 (自转轴平行)
+
+        // --- 辅助网格 (微弱) ---
+        const gridHelper = new THREE.GridHelper(12, 20, 0x446688, 0x224466);
+        gridHelper.position.y = -2.8;
+        gridHelper.material.transparent = true;
+        gridHelper.material.opacity = 0.06;
+        scene.add(gridHelper);
+
+        // --- 动画状态 ---
+        const rotationSpeedSelf = 0.006;
+        const rotationSpeedOrbit = 0.0035;
+        let elapsedTime = 0;
+        const BPM = 50;
+
+        // --- 粒子更新函数 (每个星群独立) ---
+        function updateParticles(group, time, pulseOffset = 0) {
+            const points = group.children.find(child => child.isPoints);
+            if (!points) return;
+            const geometry = points.geometry;
+            const positions = geometry.attributes.position.array;
+            const data = points.userData.data;
+            if (!data) return;
+
+            const heartPhase = time * (BPM / 50) * Math.PI * 2 + pulseOffset;
+            let pulseFactor = 1 + 0.2 * Math.sin(heartPhase) * 0.6 + 0.06 * Math.sin(heartPhase * 1.5 + 0.5);
+
+            for (let i = 0; i < data.length; i++) {
+                const d = data[i];
+                const individualPhase = d.phase + time * 0.22;
+                const individualPulse = 1 + 0.15 * Math.sin(individualPhase) * d.amplitude;
+                const combinedPulse = (pulseFactor + individualPulse * 0.3) / 1.3;
+                const scaleFactor = combinedPulse;
+
+                positions[i * 3] = d.originX * scaleFactor;
+                positions[i * 3 + 1] = d.originY * scaleFactor;
+                positions[i * 3 + 2] = d.originZ * scaleFactor;
+            }
+            geometry.attributes.position.needsUpdate = true;
+
+            const sizePulse = 0.095 + 0.02 * (pulseFactor - 0.9) * 2;
+            points.material.size = THREE.MathUtils.clamp(sizePulse, 0.07, 0.14);
+        }
+
+        // --- 动画循环 ---
+        function animate() {
+            requestAnimationFrame(animate);
+            elapsedTime += 0.016;
+
+            // 母组绕Y轴公转 (相互旋转)
+            masterGroup.rotation.y += rotationSpeedOrbit * 5;
+
+            // 每个星群自转 (绕自身Y轴)
+            groupCyan.rotation.y += rotationSpeedSelf * 0.8;
+            groupPink.rotation.y += rotationSpeedSelf * 0.8;
+
+            // 爱心自身微脉冲
+            const heartPulse = 1 + 0.025 * Math.sin(elapsedTime * (BPM / 50) * Math.PI * 2);
+            heartCyan.scale.setScalar(heartPulse);
+            heartPink.scale.setScalar(heartPulse);
+
+            // 更新粒子 (不同相位偏移)
+            updateParticles(groupCyan, elapsedTime, 0);
+            updateParticles(groupPink, elapsedTime, 1.2);
+
+            // 背景星星缓慢旋转
+            bgStars.rotation.y += 0.00015;
+            bgStars.rotation.x += 0.00005;
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // --- 自适应 ---
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- <script>
+        var num1 = prompt("第一个数")
+        var num2 = prompt("第二个数")
+        var num3 = prompt("第三个数")
+
+        var a = num1 ;
+        var b = num2 ;
+        var c = num3 ;
+
+        max = a>b?(a>c?a:c):(b>c?b:c);
+
+        alert(max);
+    </script> -->
+    <script>
+        var num1 = +prompt("第一个数")
+        var num2 = +prompt("第二个数")
+        var num3 = +prompt("第三个数")//将返回值全部转为数字，因为+
+
+        // var a = num1 ;
+        // var b = num2 ;
+        // var c = num3 ;
+
+if (num1 < num2 && num1 < num3){
+        alert('最小值为num1');
+        if ( num2 < num3){
+            alert(num1+','+num2+','+num3);
+        }else {
+            alert(num1+','+num3+','+num2);
+        }
+    }else if(num2<num1&&num2<num3){
+        if(num1<num3){
+            alert(num2+','+num1+','+num3);
+
+        }
+        else{
+            alert(num2+','+num3+','+num1);
+        }
+    }else if(num2<num1){
+        alert(num3+','+num2+','+num1);
+    }else{
+        alert(num3+','+num1+','+num2);
+    }
+
+    /*
+    先挑两数为最小再分类讨论
+    */
+    </script>
+</body>
+</html>

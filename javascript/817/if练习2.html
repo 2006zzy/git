@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        /*
+        嫁女儿条件
+        男方
+        身高180 财富1000万 颜值80以上
+        三条件同时满足，嫁了
+        有真的情况，考虑
+        都不满足，不嫁
+        */
+
+        var height= prompt("身高cm")
+        var rich = prompt("身价")
+        var handsome = prompt("颜值")
+
+        if (height >= 180 && rich >= 10000000 && handsome >= 80){
+            alert("鹅鹅鹅鹅鹅鹅不配");
+        }else if(height >= 180 || rich >= 10000000 || handsome >= 80){
+            alert("emmmmmmm不合适");
+        }
+        else {
+            alert("何方神圣？我完全没机会遇见。");
+        }
+
+    </script>
+</body>
+</html>

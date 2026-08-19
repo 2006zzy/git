@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        //数据类型指字面量类型
+        //在js中一共六种数据类型
+        /*    String 字符串类型
+              Number 数值 
+              Boolean 布尔值
+              Null 空值
+              Undefined 未定义
+              object 对象
+              只有object为引用数据类型，其余为基本数据类型
+        */
+       var str = "hello";//赋值，str为字符串
+       console.log("hello");//"hello"为字符串，hello为变量，str为变量，得使用“”，‘’引用
+       console.log(str);//与上面显示效果相同
+       str = "'hello'";
+       str = '"hello"';//可相互嵌套
+       str1 =  '\""';//表示“为普通双引号
+       /* \\表示\
+          \n表示换行
+          \t表示制表符
+          \"表示"
+          \'表示'
+        */
+       var str2 = "please";
+    str2 = "fuck";//声明只需一次，赋值结果为后一次
+       alert("先点我才能执行控制台");
+       console.log("这不就出来了");
+
+        /*在js中，所有数据类型都为number（包括浮点数和整数）
+
+        typeof检测数据类型
+
+        Number.MAX_VALUE
+        Number.MIN_VALUE
+        表示数字最大值
+        如果Number表示的数字超过了最大值，则会返回一个Infinity,-Infinity 表示正负无穷
+
+        NaN为number中的一个数字，
+        */
+       var a = 123;//数字
+       var b = "123";//字符串
+        //需要检测类型
+        console.log(typeof a);
+        console.log(typeof b);
+        //typeof 返回数据类型，例如，number，string
+        console.log(Number.MAX_VALUE);
+        c = Number.MAX_VALUE*Number.MAX_VALUE;
+        console.log(c);
+        a = Infinity;//infinity本身为字面量，表正无穷，-infinity为负无穷
+        console.log(a);
+
+        d = "abc" * "abc";//字符串乘字符串得结果NaN，数据类型也为number
+        console.log(d);
+
+        e = Number.MIN_VALUE;
+        console.log(e);
+
+        var f = 123 + 456;
+        console.log(f);//整数运算基本能保证准确
+
+        var g = 0.3 + 0.4;
+        console.log(g);//js计算浮点数就可能算不精确，尽量别使用js算钱
+
+
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

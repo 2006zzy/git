@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script text/javascript>
+    /*
+    使用==运算符，类型不同，会转换自动类型后比较。
+    */
+        console.log(true=="1");
+        console.log("true" =="1");//为字符串非Boolean值
+        /*
+        undefined 衍生子null
+        */
+       console.log(undefined == null);
+
+       console.log(NaN == 1);//NaN和任何值不相等,包括自己
+       console.log(NaN == NaN);//false
+
+       var b = NaN;
+       console.log(isNaN(b));
+       //isNaN()函数判断是否为NaN
+
+       console.log(10 != 5);
+
+       console.log("10"!=10);
+       console.log("10"==10);
+
+    /**/
+    </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        /*
+        运算符也叫操作符
+        运算符可对一个或多个值进行运算，获取结果
+        typeof也算运算符，可获得一个值的类型
+        算数运算符
+        算数运算符运算会将字符串转换为数字再进行计算 
+        字符串相加，会产生拼串行为，转数字优先
+        任何值和NaN做运算都为NaN
+        任何值和字符串做加法运算都会转换为字符串，再拼串。
+        null为0
+        +
+        *
+        /
+        %取余
+        将结果返回
+
+        */
+
+        var a = 123;
+        var result = typeof a;//运算符都返回结果
+        console.log(typeof result);
+        //result值为Number，Number类型为字符串
+
+        result = a + 1;
+        console.log(a);//结果为123
+
+        a = a + 1;
+        console.log(a);//结果为124
+
+        result = 456 + 789;
+        result = true + 1;
+        result = true + false;
+        result = null + 2;
+        result = "123" + "456";//结果为123456
+        result = "锄禾日当午，汗滴禾下土"; + //双引号不能跨行，加号可以。
+                "谁知盘中餐，粒粒皆辛苦。"
+        console.log(result);
+        result = 123 + "1";//任何值和字符串相加，都会先转换为字符串，再拼串。
+        console.log(result);//结果为1231
+
+        var c = 123;
+        // c = toString(c);
+        c = c + "";//利用这一特点，将任意数据类型转换为String.转换隐式类型。实际上也调用了String函数。
+        console.log(c);
+        console.log("c=" + c );//告诉我们到底什么类型 结果为 c = 123 经常使用
+
+        result = 1 + 2 + "3";
+        console.log(result);//结果为33
+
+        result = "1" + 2 + 3;
+        console.log(result);//结果为123
+
+        result = 100 - true;
+        console.log(result);//99
+
+        result = 2*undefined;
+        console.log(result);//NaN
+
+        result = 2*null;
+        console.log(result);//0
+
+        result = 2*"8";
+        console.log(result);//16
+
+        /*
+        减乘除,运算，都会自主转换成Number
+        */
+        d = "123";
+        d = d - 1;//d = d - 0;
+        console.log(typeof d);
+        console.log(d);
+
+        result = 9 % 3;
+        console.log(result);//取余数
+    </script>
+</body>
+</html>

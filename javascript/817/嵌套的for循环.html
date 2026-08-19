@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        /*
+        *
+        **
+        ***
+        ****
+        *****
+        输出以下图形
+        *****
+        *****
+        *****
+        *****
+        *****
+        */
+       
+        var a = 0;
+        for(a = 0;a < 5;a++){
+            for(var j=0;j<a+1;j++){
+            document.write('*&nbsp;')
+            }
+            document.write('<br/>')
+        }
+    </script>
+    <script>
+        var a = 0;
+        for(a = 0;a < 5;a++){
+            for(var j=0;j<5;j++){
+            document.write('*&nbsp;')
+            }
+            document.write('<br/>')
+        }
+    </script>
+    <script>
+        var a = 0;
+        for(a = 0;a < 5;a++){
+            for(var j=0;j<5-a;j++){
+            document.write('*&nbsp;')
+            }
+            document.write('<br/>')
+        }
+    </script>//依靠a为变量来控制最小循环的个数。
+</body>
+</html>

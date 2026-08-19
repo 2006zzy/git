@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        /*
+        *关系成立返回true，关系错误返回false
+
+        *非数值的情况
+        转换为数值再作比较
+
+        任何值和NaN比较为NaN，返回false
+
+        字符串和字符串比较,会比较相应的unicode编码
+        一位一位进行比较，一样则下一位
+        A 0041 a 0061  1 0031  
+        */
+
+        var a = 5 > 10;
+        console.log(a);
+
+        var b = 8>6;
+        console.log(b);
+
+        var o = 8>=8;
+        console.log(o);
+
+        var p = 1>=true;
+        console.log(p);
+
+        var i = 1>="0";
+        console.log(i);
+
+        var k = NaN && 1;//&&找错符
+        console.log(k);
+        var k = 1 && NaN;
+        console.log(k);
+
+        var u = NaN || 8;//||找对符
+        console.log(u);
+        var u = 8 || NaN;
+        console.log(u);
+
+        var P = NaN = 2;
+        console.log(p);
+
+        // console.log("1"<"0");
+
+        console.log("0"<"1");//true
+
+        console.log("abc"<"def");//true
+        //比较中文没有意义，比较英文才有意义
+        //字符串数字大小，不是单纯的数字大小
+    </script>
+</body>
+</html>

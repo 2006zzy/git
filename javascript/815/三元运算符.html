@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        /*
+        条件运算符也叫三元运算符，
+
+        
+        */
+    //    true?alert(true):(false);
+       var a = 10;
+       var b = 20;
+       var c = 50;
+    //    a>b? alert("a大"):alert("it is none of my business "); 
+
+       var max = a > b ? a : b;//完成求最大值目的。给?:;赋值
+       document.write("最大数字为:"+max);
+
+       var max = a>b?(a>c?a:c):(b>c?b:c);
+       //三元运算符串烧，诶嘿嘿，不方便阅读不容易被替代。
+       console.log(max);
+    </script>
+</body>
+</html>

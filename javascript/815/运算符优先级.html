@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script type="text/javascript">
+        var a,b,c;
+        a = 1;
+        b = 2;
+        c = 3;
+        var result = a+b*c;//乘除优先级高
+        document.write(result);
+
+        var x = a || b && c ;//与优先级高，先算&&。
+        document.write(x);
+        //优先级相当，则，由左往右
+    </script>
+</body>
+</html>

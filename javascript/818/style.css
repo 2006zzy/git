@@ -1,0 +1,220 @@
+/* ===== 全局重置 ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    background-color: #0a0a1a;
+    font-family: 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
+    color: #ffffff;
+    user-select: none;
+}
+
+/* ===== 加载提示 ===== */
+#loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #0a0a1a;
+    z-index: 1000;
+    transition: opacity 0.6s ease;
+}
+
+#loading.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loader {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(255, 77, 138, 0.1);
+    border-top: 3px solid #ff4d8a;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#loading p {
+    margin-top: 20px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
+/* ===== 3D 画布容器 ===== */
+#canvas-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#canvas-container canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* ===== 顶部标题 ===== */
+#header {
+    position: fixed;
+    top: 30px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 10;
+    pointer-events: none;
+}
+
+#header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #ff4d8a;
+    text-shadow: 0 0 30px rgba(255, 77, 138, 0.4), 0 0 60px rgba(255, 77, 138, 0.2);
+    letter-spacing: 2px;
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        text-shadow: 0 0 30px rgba(255, 77, 138, 0.4), 0 0 60px rgba(255, 77, 138, 0.2);
+    }
+    50% {
+        text-shadow: 0 0 40px rgba(255, 77, 138, 0.6), 0 0 80px rgba(255, 77, 138, 0.3);
+    }
+}
+
+/* 使用纯色渐变模拟文字渐变效果（替代background-clip） */
+.gradient-text {
+    font-weight: 600;
+    background: linear-gradient(45deg, #ff6b9d, #4ecdc4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    /* 备用方案：如果浏览器不支持，显示为粉色 */
+    color: #ff6b9d;
+}
+
+/* 或者使用更兼容的方式：直接用颜色 */
+.gradient-text-fallback {
+    color: #ff6b9d;
+    font-weight: 600;
+}
+
+#header .subtitle {
+    margin-top: 8px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 4px;
+    font-weight: 300;
+}
+
+/* ===== 底部信息 ===== */
+#footer {
+    position: fixed;
+    bottom: 30px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 10;
+    pointer-events: none;
+}
+
+#footer p {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 1px;
+}
+
+#footer .highlight {
+    color: #ff6b9d;
+    font-weight: 500;
+}
+
+#footer .highlight-cyan {
+    color: #4ecdc4;
+    font-weight: 500;
+}
+
+.controls-hint {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.2);
+    letter-spacing: 0.5px;
+}
+
+.controls-hint span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ===== 响应式设计 ===== */
+@media (max-width: 768px) {
+    #header h1 {
+        font-size: 22px;
+    }
+    
+    #header .subtitle {
+        font-size: 12px;
+        letter-spacing: 2px;
+    }
+    
+    #footer p {
+        font-size: 12px;
+    }
+    
+    .controls-hint {
+        gap: 15px;
+        font-size: 11px;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 480px) {
+    #header {
+        top: 20px;
+    }
+    
+    #header h1 {
+        font-size: 18px;
+    }
+    
+    #header .subtitle {
+        font-size: 10px;
+        margin-top: 4px;
+    }
+    
+    #footer {
+        bottom: 20px;
+    }
+    
+    #footer p {
+        font-size: 10px;
+    }
+    
+    .controls-hint {
+        gap: 10px;
+        font-size: 10px;
+        margin-top: 8px;
+    }
+}

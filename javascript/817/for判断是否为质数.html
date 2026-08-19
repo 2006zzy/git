@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        /*
+        质数
+        */
+        var a = prompt('请输入一个大于1 的整数');
+        var d = true;//引用一个数，
+        if(a<=1){
+            alert('不符合要求，请重新输入');
+            
+        }
+        else{
+            for(var b = 2;b<a;b++){
+                if(a%b==0)//易错点，b不能单指一个b
+                //逆向思维，不是质数条件
+                {
+                    d = false;
+                // }else{
+                //     document.write(a + <br/>)
+                }
+            }
+            if(d){
+                document.write(a + '是质数');
+            }else{
+                alert(a + '不是质数');
+            }
+        }
+    </script>
+</body>
+</html>

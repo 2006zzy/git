@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script type="text/javascript">
+        /*
+        一元运算符，只需要一个操作数
+        +正号 不会对数字产生任何影响
+        —负号 对数字进行取反
+        */
+       var a = 123;
+       a = -a;
+       console.log(a);
+        console.log(typeof a);
+
+        a = true;
+        a = -a;
+        console.log(a);
+        console.log(typeof a);
+
+        a = true;
+        a = +a;
+        console.log(typeof a);
+        
+        a = true;
+        console.log(typeof a);//+-*/运算符自动调用NUmber函数
+
+        var result = 1+"2"+3;
+        console.log("result=" +result);//也属于隐式类型转换
+    </script>
+</body>
+</html>

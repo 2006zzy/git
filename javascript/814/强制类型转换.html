@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        /*
+        将一个数据类型强制转换为其他数据类型
+        String Number Boolean之间
+        调用被转换类型toString()方法
+        a.toString()
+        null和undefined没有返回值
+        
+        Number和Boolean实际上就是调用toString()方法
+        对于null和undefined，不会调用toString()方法
+        直接转换为字符串“null”“underfined”
+        */
+       var a = 123;
+       //数字123
+       //调用a的toString();方法
+        var b = a.toString();
+        // var b = a.toString();错误示范
+        //字符串123
+       console.log(typeof a);//返回String
+       console.log(a);//为123
+
+        //调用string()函数将a转换为字符串
+        a = String(a);
+
+        a = undefined;
+        a = String(a);
+        
+        a = null;
+        a = String(a);
+
+        console.log(a);
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

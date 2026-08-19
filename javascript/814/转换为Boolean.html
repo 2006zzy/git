@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script type="text/javascript">
+        /*
+        0,NaN,undefined,空值，null,转换为布尔值结果为false
+        Infinity为true
+        对象也会转换为true 
+        */
+       //调用Boolean（）函数将a转换为布尔值
+       var a = 123;
+       a = 456;//
+       a = Boolean(a);
+       console.log(typeof a);//Boolean.
+       console.log(a);//结果为true.
+
+       a = Inifity ;
+       a = Boolean(a);
+       console.log(a);//true
+       a = NaN;
+       a = Boolean(a);
+       console.log(a);//false
+       a = 0;
+       a = Boolean(a);
+       console.log(a);//false
+
+       a = "hello";
+       a = Boolean(a)
+       console.log(a);//true
+
+       a = "";
+       a = Boolean(a);
+       console.log(a);//false
+
+       a = null;
+       a = Boolean(a);
+        console.log(a);//false
+
+       a = undefined(a);
+       a = Boolean(a);
+       console.log(a);//false
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
